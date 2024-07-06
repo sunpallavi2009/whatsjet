@@ -48,3 +48,13 @@ Route::group([
         'apiProcessContactCreate',
     ])->name('api.vendor.contact.create.process');
 });
+
+Route::group([
+    'middleware' => 'api.vendor.authenticate',
+    'prefix' => '{vendorUid}/',
+], function () {
+    Route::post('/contact/send-queue-template-message', [
+        WhatsAppServiceController::class,
+        'apiSendTemplateQueueChatMessage',
+    ])->name('api.vendor.chat_template_queue_message.send.process');
+});

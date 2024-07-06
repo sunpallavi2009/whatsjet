@@ -172,12 +172,12 @@
                                     {!! __tr('WhatsApp Onboarding') !!}
                                 </a>
                             </li>
-                            <li class="nav-item <?= Request::fullUrl() == route('manage.configuration.read', ['pageType' => 'licence-information']) ? 'active' : '' ?>">
+                            {{-- <li class="nav-item <?= Request::fullUrl() == route('manage.configuration.read', ['pageType' => 'licence-information']) ? 'active' : '' ?>">
                                 <a class="nav-link"  href="<?= route('manage.configuration.read', ['pageType' => 'licence-information']) ?>">
                                     <i class="fas fa-certificate"></i>
                                     <span><?= __tr('License') ?></span>
                                 </a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </div>
                 </li>
@@ -202,12 +202,22 @@
                 </a>
                 </li>
                 @endif
-                @if (hasVendorAccess('manage_campaigns'))
+                {{-- @if (hasVendorAccess('manage_campaigns'))
                 <li class="nav-item">
                     <a class="nav-link {{ markAsActiveLink('vendor.campaign.read.list_view') }}"
                         href="{{ route('vendor.campaign.read.list_view') }}">
                         <i class="fa fa-bullhorn"></i>
                         {{ __tr('Campaigns') }}
+                    </a>
+                </li>
+                @endif --}}
+                
+                @if (hasVendorAccess('manage_campaigns'))
+                <li class="nav-item">
+                    <a class="nav-link {{ markAsActiveLink('vendor.autocampaign.read.list_view') }}"
+                        href="{{ route('vendor.autocampaign.read.list_view') }}">
+                        <i class="fa fa-bullhorn"></i>
+                        {{ __tr('Auto Campaigns') }}
                     </a>
                 </li>
                 @endif

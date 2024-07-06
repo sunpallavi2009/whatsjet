@@ -22,6 +22,7 @@ use App\Yantrana\Components\Configuration\Controllers\ConfigurationController;
 use App\Yantrana\Components\Subscription\Controllers\ManualSubscriptionController;
 use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppServiceController;
 use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppTemplateController;
+use App\Yantrana\Components\AutoCampaign\Controllers\AutoCampaignController;
 
 /*
 |--------------------------------------------------------------------------
@@ -452,6 +453,31 @@ Route::middleware([
                     WhatsAppServiceController::class,
                     'sendTemplateMessageProcess',
                 ])->name('vendor.template_message.contact.process');
+
+
+                Route::prefix('/autocampaign')->group(function () {
+
+                    Route::get('/', [
+                        AutoCampaignController::class,
+                        'showAutoCampaignView',
+                    ])->name('vendor.autocampaign.read.list_view');
+                    
+                     Route::get('/{status}/list-data', [
+                        AutoCampaignController::class,
+                        'prepareAutoCampaignList',
+                    ])->name('vendor.autocampaign.read.list');
+
+                    Route::get('/autocampaignfetch', [AutoCampaignController::class, 'fetchAndSend'])->name('vendor.autocampaign.process.data');
+                    
+                     Route::get('/vendor/autocampaign/get-next-campaign-id', [AutoCampaignController::class, 'getNextCampaignId'])->name('vendor.autocampaign.getNextCampaignId');
+                     
+                     Route::get('/status/{campaignUid}/view/{pageType?}', [
+                        AutoCampaignController::class,
+                        'AutocampaignStatusView',
+                    ])->name('vendor.autocampaign.status.view');
+                    
+
+                });
 
                 Route::prefix('/campaign')->group(function () {
 

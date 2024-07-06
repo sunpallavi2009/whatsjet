@@ -7,6 +7,8 @@
 
 namespace App\Yantrana\Components\WhatsAppService\Controllers;
 
+use Illuminate\Support\Facades\Validator; 
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use App\Yantrana\Base\BaseController;
@@ -110,6 +112,8 @@ class WhatsAppServiceController extends BaseController
             'timezone' => 'required',
             'title' => 'required',
         ]);
+
+
         $processReaction = $this->whatsAppServiceEngine->processCampaignCreate($request);
 
         // get back with response
@@ -297,6 +301,41 @@ class WhatsAppServiceController extends BaseController
         ]);
         // send message
         $processReaction = $this->whatsAppServiceEngine->processSendMessageForContact($request);
+        // processed data
+        $processedData = $processReaction->data();
+        // get back the response
+        return $this->processApiResponse($processReaction, [
+            'log_uid' => $processedData['log_message']['_uid'] ?? null,
+            'contact_uid' => $processedData['contactUid'] ?? null,
+            'phone_number' => $processedData['log_message']['contact_wa_id'] ?? null,
+            'wamid' => $processedData['log_message']['wamid'] ?? null,
+            'status' => $processedData['log_message']['status'] ?? null,
+        ]);
+    }
+
+    public function apiSendTemplateQueueChatMessage(BaseRequestTwo $request, $vendorUid)
+    {
+        $this->apiAccessAllowedOrAbort();
+        validateVendorAccess('messaging');
+        // check if account failed
+        if(!isWhatsAppBusinessAccountReady()) {
+            return $this->processApiResponse([
+                'result' => 'failed',
+                'message' => 'Please complete your WhatsApp Cloud API Setup first',
+            ]);
+        }
+        // validate the inputs
+        $request->validate([
+            'phone_number' => 'required',
+            'template_name' => 'required',
+            'template_language' => 'required',
+            'header_image' => 'sometimes|url',
+            'header_video' => 'sometimes|url',
+            'header_document' => 'sometimes|url',
+            'campaigns__id' => 'sometimes|numeric'
+        ]);
+        // send message
+        $processReaction = $this->whatsAppServiceEngine->processSendQueueMessageForContact($request);
         // processed data
         $processedData = $processReaction->data();
         // get back the response

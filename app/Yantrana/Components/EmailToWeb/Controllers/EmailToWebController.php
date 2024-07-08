@@ -56,39 +56,44 @@ class EmailToWebController extends BaseController
 
 
     public function fetchEmailsWithCredentials(Request $request)
-    {
-        $credentials = $request->only(['username', 'password']);
+{
+    // Validate and get username and password from the request
+    $credentials = $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        $clientManager = new ClientManager();
+    // Create an instance of ClientManager
+    $clientManager = new ClientManager();
 
+    // Attempt to connect to IMAP server
+    try {
         $client = $clientManager->make([
             'host'          => 'mail.irriion.com',
             'port'          => 143,
-            'encryption'    => null, // Try 'tls', 'ssl', or null
-            'validate_cert' => false,
+            'encryption'    => null, // Try 'tls', 'ssl', or null based on server requirements
+            'validate_cert' => false, // Temporary disable certificate validation (not recommended for production)
             'username'      => $credentials['username'],
             'password'      => $credentials['password'],
-            'protocol'      => 'imap'
+            'protocol'      => 'imap',
         ]);
 
-        try {
-            $client->connect();
-            $inbox = $client->getFolder('INBOX');
-            $messages = $inbox->messages()->all()->get();
+        $client->connect(); // Connect to the IMAP server
 
-            return view('email-to-web.emaillist', compact('messages'));
-        } catch (\Webklex\PHPIMAP\Exceptions\ConnectionFailedException $e) {
-            // Log the error message
-            \Log::error("IMAP Connection Failed: " . $e->getMessage());
+        $inbox = $client->getFolder('INBOX'); // Get the INBOX folder
+        $messages = $inbox->messages()->all()->get(); // Fetch all messages
 
-            return response()->json(['error' => 'IMAP connection failed.'], 500);
-        } catch (\Exception $e) {
-            // Log any other errors
-            \Log::error("An error occurred: " . $e->getMessage());
-
-            return response()->json(['error' => 'An error occurred.'], 500);
-        }
+        // Return the view with fetched messages
+        return view('email-to-web.emaillist', compact('messages'));
+    } catch (\Webklex\PHPIMAP\Exceptions\ConnectionFailedException $e) {
+        \Log::error("IMAP Connection Failed: " . $e->getMessage()); // Log connection error
+        return response()->json(['error' => 'IMAP connection failed.'], 500); // Return error response
+    } catch (\Exception $e) {
+        \Log::error("An error occurred: " . $e->getMessage()); // Log other errors
+        return response()->json(['error' => 'An error occurred.'], 500); // Return generic error response
     }
+}
+
 
     /**
      * list of Contact

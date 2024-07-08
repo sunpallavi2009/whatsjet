@@ -27,7 +27,8 @@
         "propaganistas/laravel-disposable-email": "^2.3",
         "pusher/pusher-php-server": "^7.2",
         "unn/gettext-blade": "dev-main",
-        "webklex/laravel-imap": "^5.3"
+        "webklex/laravel-imap": "^5.3",
+        "webklex/php-imap": "^5.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.22.0",

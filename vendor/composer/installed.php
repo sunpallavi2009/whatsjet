@@ -3,7 +3,7 @@
         'name' => 'livelyworks/insta-order',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '792c86bfe52713fc806370f1b0e618d04c7f808a',
+        'reference' => 'ca278912af15421a843d77a1f8d4be2e8745ebd3',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -634,7 +634,7 @@
         'livelyworks/insta-order' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '792c86bfe52713fc806370f1b0e618d04c7f808a',
+            'reference' => 'ca278912af15421a843d77a1f8d4be2e8745ebd3',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

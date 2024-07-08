@@ -221,6 +221,46 @@
                     </a>
                 </li>
                 @endif
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="vendorEmailToWebSubmenuNav">
+                        <i class="fa fa-users text-dark"></i>
+                        <span class="">{{ __tr('Eamil To Web') }}</span>
+                    </a>
+                    <div class="collapse lw-expandable-nav" id="vendorEmailToWebSubmenuNav">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }}"
+                                    href="{{ route('vendor.emailtoweb.read.list_view') }}">
+                                    <i class="fa fa-list"></i>
+                                    {{ __tr('List') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }}"
+                                    href="{{ route('vendor.emailtoweb.emails.credentials') }}">
+                                    <i class="fa fa-list-alt"></i>
+                                    {{ __tr('Settings') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ markAsActiveLink('vendor.contact.custom_field.read.list_view') }}"
+                                    href="{{ route('vendor.contact.custom_field.read.list_view') }}">
+                                    <i class="fa fa-stream"></i>
+                                    {{ __tr('Custom Fields') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+
+
+
+
+
                 @if (hasVendorAccess('manage_contacts'))
                 <li class="nav-item">
                     <a class="nav-link" href="#vendorContactSubmenuNav" data-toggle="collapse" role="button"

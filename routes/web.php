@@ -23,6 +23,7 @@ use App\Yantrana\Components\Subscription\Controllers\ManualSubscriptionControlle
 use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppServiceController;
 use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppTemplateController;
 use App\Yantrana\Components\AutoCampaign\Controllers\AutoCampaignController;
+use App\Yantrana\Components\EmailToWeb\Controllers\EmailToWebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -455,6 +456,7 @@ Route::middleware([
                 ])->name('vendor.template_message.contact.process');
 
 
+
                 Route::prefix('/autocampaign')->group(function () {
 
                     Route::get('/', [
@@ -477,6 +479,26 @@ Route::middleware([
                     ])->name('vendor.autocampaign.status.view');
                     
 
+                });
+
+                
+                Route::prefix('/emailtoweb')->group(function () {
+
+                    Route::get('/list', [
+                        EmailToWebController::class,
+                        'showEmailToWebView',
+                    ])->name('vendor.emailtoweb.read.list_view');
+
+                    Route::get('/emails/credentials', [
+                        EmailToWebController::class,
+                        'showCredentialsForm',
+                    ])->name('vendor.emailtoweb.emails.credentials');
+
+                    Route::post('/fetchWithCredentials', [
+                        EmailToWebController::class,
+                        'fetchEmailsWithCredentials',
+                    ])->name('vendor.emailtoweb.emails.fetchWithCredentials');
+                    
                 });
 
                 Route::prefix('/campaign')->group(function () {

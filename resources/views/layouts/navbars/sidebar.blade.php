@@ -223,9 +223,9 @@
                 @endif
 
                 <li class="nav-item">
-                    <a class="nav-link" href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
+                    <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }},{{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }} " href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="vendorEmailToWebSubmenuNav">
-                        <i class="fa fa-users text-dark"></i>
+                        <i class="fa fa-envelope text-dark"></i>
                         <span class="">{{ __tr('Eamil To Web') }}</span>
                     </a>
                     <div class="collapse lw-expandable-nav" id="vendorEmailToWebSubmenuNav">
@@ -240,15 +240,8 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }}"
                                     href="{{ route('vendor.emailtoweb.emails.credentials') }}">
-                                    <i class="fa fa-list-alt"></i>
+                                    <i class="fa fa-user-plus"></i>
                                     {{ __tr('Settings') }}
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ markAsActiveLink('vendor.contact.custom_field.read.list_view') }}"
-                                    href="{{ route('vendor.contact.custom_field.read.list_view') }}">
-                                    <i class="fa fa-stream"></i>
-                                    {{ __tr('Custom Fields') }}
                                 </a>
                             </li>
                         </ul>
@@ -257,44 +250,46 @@
 
 
 
-
-
-
-
                 @if (hasVendorAccess('manage_contacts'))
-                <li class="nav-item">
-                    <a class="nav-link" href="#vendorContactSubmenuNav" data-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="vendorContactSubmenuNav">
-                        <i class="fa fa-users text-dark"></i>
-                        <span class="">{{ __tr('Contacts') }}</span>
-                    </a>
-                <div class="collapse lw-expandable-nav" id="vendorContactSubmenuNav">
-                    <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link {{ markAsActiveLink('vendor.contact.read.list_view') }}"
-                                href="{{ route('vendor.contact.read.list_view') }}">
-                                <i class="fa fa-list"></i>
-                                {{ __tr('List') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ markAsActiveLink('vendor.contact.group.read.list_view') }}"
-                                href="{{ route('vendor.contact.group.read.list_view') }}">
-                                <i class="fa fa-list-alt"></i>
-                                {{ __tr('Groups') }}
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ markAsActiveLink('vendor.contact.custom_field.read.list_view') }}"
-                                href="{{ route('vendor.contact.custom_field.read.list_view') }}">
-                                <i class="fa fa-stream"></i>
-                                {{ __tr('Custom Fields') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            @endif
+                    @php
+                        $isContactSubmenuActive = markAsActiveLink('vendor.contact.read.list_view') ||
+                                                markAsActiveLink('vendor.contact.group.read.list_view') ||
+                                                markAsActiveLink('vendor.contact.custom_field.read.list_view');
+                    @endphp
+                    <li class="nav-item">
+                        <a class="nav-link {{ $isContactSubmenuActive ? 'active' : '' }}" href="#vendorContactSubmenuNav" data-toggle="collapse" role="button"
+                            aria-expanded="false" aria-controls="vendorContactSubmenuNav">
+                            <i class="fa fa-users text-dark"></i>
+                            <span class="">{{ __tr('Contacts') }}</span>
+                        </a>
+                        <div class="collapse lw-expandable-nav" id="vendorContactSubmenuNav">
+                            <ul class="nav nav-sm flex-column">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ markAsActiveLink('vendor.contact.read.list_view') }}"
+                                        href="{{ route('vendor.contact.read.list_view') }}">
+                                        <i class="fa fa-list"></i>
+                                        {{ __tr('List') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ markAsActiveLink('vendor.contact.group.read.list_view') }}"
+                                        href="{{ route('vendor.contact.group.read.list_view') }}">
+                                        <i class="fa fa-list-alt"></i>
+                                        {{ __tr('Groups') }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ markAsActiveLink('vendor.contact.custom_field.read.list_view') }}"
+                                        href="{{ route('vendor.contact.custom_field.read.list_view') }}">
+                                        <i class="fa fa-stream"></i>
+                                        {{ __tr('Custom Fields') }}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+            
                 @if (hasVendorAccess('manage_templates'))
                 <li class="nav-item">
                     <a class="nav-link {{ markAsActiveLink('vendor.whatsapp_service.templates.read.list_view') }}"
@@ -329,37 +324,47 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                        <a class="nav-link @if(isWhatsAppBusinessAccountReady()) collapsed @else text-warning @endif" href="#vendorSettingsNav" data-toggle="collapse" role="button"
-                            aria-expanded="@php echo !isWhatsAppBusinessAccountReady() ? 'true' : 'false'; @endphp" aria-controls="vendorSettingsNav">
-                            <i class="fa fa-cogs"></i>
-                            <span class="">{{ __tr('Settings') }}</span>
-                        </a>
+                    @php
+                        $isSettingsSubmenuActive = (isset($pageType) && in_array($pageType, [
+                            'general', 
+                            'whatsapp-cloud-api-setup', 
+                            'ai-chat-bot-setup', 
+                            'api-access'
+                        ]));
+                    @endphp
+                    <a class="nav-link @if(isWhatsAppBusinessAccountReady()) collapsed @else text-warning @endif {{ $isSettingsSubmenuActive ? 'active' : '' }}" 
+                       href="#vendorSettingsNav" data-toggle="collapse" role="button"
+                       aria-expanded="@php echo !isWhatsAppBusinessAccountReady() ? 'true' : 'false'; @endphp" 
+                       aria-controls="vendorSettingsNav">
+                        <i class="fa fa-cogs"></i>
+                        <span class="">{{ __tr('Settings') }}</span>
+                    </a>
                     <div class="collapse @if(!isWhatsAppBusinessAccountReady()) show @endif lw-expandable-nav" id="vendorSettingsNav">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a class="nav-link <?= (isset($pageType) and $pageType == 'general') ? 'active' : '' ?>"
-                                    href="<?= route('vendor.settings.read', ['pageType' => 'general']) ?>">
+                                <a class="nav-link {{ (isset($pageType) && $pageType == 'general') ? 'active' : '' }}"
+                                   href="{{ route('vendor.settings.read', ['pageType' => 'general']) }}">
                                     <i class="fa fa-cog"></i>
                                     {{ __tr('General') }}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <strong><a class="nav-link <?= (isset($pageType) and $pageType == 'whatsapp-cloud-api-setup') ? 'active' : '' ?> @if(!isWhatsAppBusinessAccountReady()) text-warning @endif"
-                                    href="<?= route('vendor.settings.read', ['pageType' => 'whatsapp-cloud-api-setup']) ?>">
+                                <strong><a class="nav-link {{ (isset($pageType) && $pageType == 'whatsapp-cloud-api-setup') ? 'active' : '' }} @if(!isWhatsAppBusinessAccountReady()) text-warning @endif"
+                                   href="{{ route('vendor.settings.read', ['pageType' => 'whatsapp-cloud-api-setup']) }}">
                                     <i class="fab fa-whatsapp"></i>
                                     {{ __tr('Cloud API Setup') }} @if(!isWhatsAppBusinessAccountReady())<i class="fas fa-exclamation-triangle ml-1"></i>@endif
                                 </a></strong>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= (isset($pageType) and $pageType == 'ai-chat-bot-setup') ? 'active' : '' ?>"
-                                    href="<?= route('vendor.settings.read', ['pageType' => 'ai-chat-bot-setup']) ?>">
+                                <a class="nav-link {{ (isset($pageType) && $pageType == 'ai-chat-bot-setup') ? 'active' : '' }}"
+                                   href="{{ route('vendor.settings.read', ['pageType' => 'ai-chat-bot-setup']) }}">
                                     <i class="fa fa-brain"></i>
                                     {{ __tr('AI Chat Bot') }}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link <?= (isset($pageType) and $pageType == 'api-access') ? 'active' : '' ?>"
-                                    href="<?= route('vendor.settings.read', ['pageType' => 'api-access']) ?>">
+                                <a class="nav-link {{ (isset($pageType) && $pageType == 'api-access') ? 'active' : '' }}"
+                                   href="{{ route('vendor.settings.read', ['pageType' => 'api-access']) }}">
                                     <i class="fa fa-terminal"></i>
                                     {{ __tr('API Access') }}
                                 </a>
@@ -367,6 +372,7 @@
                         </ul>
                     </div>
                 </li>
+                
                 @endif
                 @endif
             </ul>

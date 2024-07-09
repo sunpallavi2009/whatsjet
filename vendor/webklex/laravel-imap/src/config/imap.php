@@ -47,10 +47,10 @@ return [
     'accounts' => [
 
         'default' => [// account identifier
-            'host'  => env('IMAP_HOST', 'mail.irriion.com'),
-            'port'  => env('IMAP_PORT', 143),
+            'host'  => env('IMAP_HOST', 'irriion.com'),
+            'port'  => env('IMAP_PORT', 993),
             'protocol'  => env('IMAP_PROTOCOL', 'imap'), //might also use imap, [pop3 or nntp (untested)]
-            'encryption'    => env('IMAP_ENCRYPTION', 'tls'), // Supported: false, 'ssl', 'tls', 'notls', 'starttls'
+            'encryption'    => env('IMAP_ENCRYPTION', 'ssl'), // Supported: false, 'ssl', 'tls', 'notls', 'starttls'
             'validate_cert' => env('IMAP_VALIDATE_CERT', false),
             'username' => env('IMAP_USERNAME', 'admin@irriion.com'),
             'password' => env('IMAP_PASSWORD', 'Excel@123#'),

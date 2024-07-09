@@ -481,25 +481,6 @@ Route::middleware([
 
                 });
 
-                
-                Route::prefix('/emailtoweb')->group(function () {
-
-                    Route::get('/list', [
-                        EmailToWebController::class,
-                        'showEmailToWebView',
-                    ])->name('vendor.emailtoweb.read.list_view');
-
-                    Route::get('/emails/credentials', [
-                        EmailToWebController::class,
-                        'showCredentialsForm',
-                    ])->name('vendor.emailtoweb.emails.credentials');
-
-                    Route::post('/fetchWithCredentials', [
-                        EmailToWebController::class,
-                        'fetchEmailsWithCredentials',
-                    ])->name('vendor.emailtoweb.emails.fetchWithCredentials');
-                    
-                });
 
                 Route::prefix('/campaign')->group(function () {
 
@@ -690,6 +671,49 @@ Route::middleware([
                 });
             });
 
+
+            
+                
+            Route::prefix('/emailtoweb')->group(function () {
+
+                Route::get('/list', [
+                    EmailToWebController::class,
+                    'showEmailToWebView',
+                ])->name('vendor.emailtoweb.read.list_view');
+
+                Route::get("/list-data", [
+                    EmailToWebController::class,
+                    'prepareEmailToWebList'
+                ])->name('vendor.emailtoweb.read.list');
+
+
+                Route::get('/emails/credentials', [
+                    EmailToWebController::class,
+                    'showCredentialsForm',
+                ])->name('vendor.emailtoweb.emails.credentials');
+
+                Route::post('/fetchWithCredentials', [
+                    EmailToWebController::class,
+                    'fetchEmailsWithCredentials',
+                ])->name('vendor.emailtoweb.emails.fetchWithCredentials');
+
+                // Contact get the data
+                Route::get('/{emailIdOrUid}/get-data', [
+                    EmailToWebController::class,
+                    'EmailToWebData',
+                ])->name('vendor.emailtoweb.read.data');
+
+                Route::post('/{emailIdOrUid}/delete-process', [
+                    EmailToWebController::class,
+                    'processEmailToWebDelete',
+                ])->name('vendor.emailtoweb.delete');
+
+                Route::post('/delete-selected-process', [
+                    EmailToWebController::class,
+                    'selectedEmailToWebDelete',
+                ])->name('vendor.emailtoweb.selected.delete');
+                
+            });
 
             // BotReply Routes Group Start
             Route::prefix('/bot-replies')->group(function () {

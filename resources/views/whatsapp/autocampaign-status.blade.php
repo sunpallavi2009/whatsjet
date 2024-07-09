@@ -1,7 +1,7 @@
-@extends('layouts.app', ['title' => __tr('Campaign Status')])
+@extends('layouts.app', ['title' => __tr('AutoCampaign Status')])
 @section('content')
 @include('users.partials.header', [
-'title' => __tr('Campaign Dashboard'),
+'title' => __tr('AutoCampaign Dashboard'),
 'description' => '',
 'class' => 'col-lg-7'
 ])
@@ -23,8 +23,8 @@ $campaignLogId=$campaign->_id;
         <!-- button -->
         <div class="col-12 mb-3">
             <div class="float-right">
-                <a class="lw-btn btn btn-secondary" href="{{ route('vendor.autocampaign.read.list_view') }}">{{ __tr('Back to Campaigns') }}</a>
-                <a class="lw-btn btn btn-primary" href="{{ route('vendor.campaign.new.view') }}">{{ __tr('Create New Campaign') }}</a>
+                <a class="lw-btn btn btn-secondary" href="{{ route('vendor.autocampaign.read.list_view') }}">{{ __tr('Back to AutoCampaign') }}</a>
+                {{-- <a class="lw-btn btn btn-primary" href="{{ route('vendor.campaign.new.view') }}">{{ __tr('Create New Campaign') }}</a> --}}
             </div>
         </div>
         <!--/ button -->
@@ -34,7 +34,7 @@ $campaignLogId=$campaign->_id;
                     <div class="row">
                         <div class="col">
                             @if($campaign->status == 5) <span class="rounded py-1 px-3 badge-dark text-white mb-2 float-right">{{  __tr('Archived') }}</span> @endif
-                            <h5 class="card-title text-uppercase text-muted mb-0">{{ __tr('Campaign Name') }}</h5>
+                            <h5 class="card-title text-uppercase text-muted mb-0">{{ __tr('AutoCampaign Name') }}</h5>
                             <span class="h2 font-weight-bold mb-0">{{ $campaign->title }}</span>
                             <p class="mt-3 mb-0 text-muted text-sm">
                             <h2 class="badge badge-warning fs-2" x-text="statusText"></h2>

@@ -119,7 +119,7 @@ class AutoCampaignEngine extends BaseEngine implements CampaignEngineInterface
         // check if the record found
         if (__isEmpty($campaign)) {
             // if not found
-            return $this->engineResponse(18, null, __tr('Campaign not found'));
+            return $this->engineResponse(18, null, __tr('AutoCampaign not found'));
         }
         // Prepare Update Package data
         $updateData = [
@@ -127,11 +127,11 @@ class AutoCampaignEngine extends BaseEngine implements CampaignEngineInterface
         ];
         //Check if package archive
         if ($this->AutoCampaignRepository->updateIt($campaign,$updateData)) {
-            return $this->engineSuccessResponse([], __tr('Campaign Archived successfully'));
+            return $this->engineSuccessResponse([], __tr('AutoCampaign Archived successfully'));
         }
 
         // if failed to archive
-        return $this->engineFailedResponse([], __tr('Failed to Archive Campaign'));
+        return $this->engineFailedResponse([], __tr('Failed to Archive AutoCampaign'));
     }
      /**
      * Campaign unarchive process

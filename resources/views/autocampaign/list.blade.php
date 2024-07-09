@@ -22,13 +22,13 @@
         </div>
         <!-- button -->
         <div class="col-xl-12 mb-3">
-                <a class="lw-btn btn btn-primary float-right" href="{{ route('vendor.campaign.new.view') }}">{{ __tr('Create New Campaign') }}</a>
+                <a class="lw-btn btn btn-primary float-right" href="{{ route('vendor.campaign.new.view') }}">{{ __tr('Create New AutoCampaign') }}</a>
         </div>
         <!--/ button -->
         <ul class="nav nav-tabs">
         <!-- Active tab -->
 					<li class="nav-item">
-						<a class="nav-link <?= $status == 'active' ? 'active' : '' ?>" data-title="{{ __tr('Active ') }}" href="<?= route('vendor.campaign.read.list_view', ['status' => 'active']) ?>">
+						<a class="nav-link <?= $status == 'active' ? 'active' : '' ?>" data-title="{{ __tr('Active ') }}" href="<?= route('vendor.autocampaign.read.list_view', ['status' => 'active']) ?>">
 							<?= __tr('Active') ?>
 						</a>
 					</li>
@@ -36,7 +36,7 @@
 
 					<!-- Archive tab -->
 					<li class="nav-item">
-						<a class="nav-link <?= $status == 'archived' ? 'active' : '' ?>  " data-title="{{ __tr('Archive') }}" href="<?= route('vendor.campaign.read.list_view', ['status' => 'archived']) ?>">
+						<a class="nav-link <?= $status == 'archived' ? 'active' : '' ?>  " data-title="{{ __tr('Archive') }}" href="<?= route('vendor.autocampaign.read.list_view', ['status' => 'archived']) ?>">
 							<?= __tr('Archive') ?>
 						</a>
 					</li>
@@ -56,7 +56,7 @@
         </div>
         <!-- action template -->
         <script type="text/template" id="campaignActionColumnTemplate">
-        <a href="<%= __Utils.apiURL("{{ route('vendor.autocampaign.status.view', ['campaignUid' => 'campaignUid',]) }}", {'campaignUid': __tData._uid}) %>" class="btn btn-dark btn-sm" title="{{ __tr('Campaign Details') }}"><i class="fa fa-tachometer"></i> {{  __tr('Campaign Dashboard') }}</a>
+        <a href="<%= __Utils.apiURL("{{ route('vendor.autocampaign.status.view', ['campaignUid' => 'campaignUid',]) }}", {'campaignUid': __tData._uid}) %>" class="btn btn-dark btn-sm" title="{{ __tr('AutoCampaign Details') }}"><i class="fa fa-tachometer"></i> {{  __tr('AutoCampaign Dashboard') }}</a>
 <!--  Delete Action -->
 <% if(__tData.delete_allowed) { %>
 <a data-method="post" href="<%= __Utils.apiURL("{{ route('vendor.campaign.write.delete', [ 'campaignIdOrUid']) }}", {'campaignIdOrUid': __tData._uid}) %>" class="btn btn-danger btn-sm lw-ajax-link-action-via-confirm" data-confirm="#lwDeleteCampaign-template" title="{{ __tr('Delete') }}" data-callback-params="{{ json_encode(['datatableId' => '#lwCampaignList']) }}" data-callback="appFuncs.modelSuccessCallback"><i class="fa fa-trash"></i> {{  __tr('Delete') }}</a>
@@ -95,13 +95,13 @@
          <!-- Campaign archive template -->
          <script type="text/template" id="lwArchiveCampaign-template">
             <h2>{{ __tr('Are You Sure!') }}</h2>
-            <p>{{ __tr('Are you sure you want to archive this Campaign?') }}</p>
+            <p>{{ __tr('Are you sure you want to archive this AutoCampaign?') }}</p>
     </script>
         <!-- /Campaign archive template -->
            <!-- Campaign archive template -->
            <script type="text/template" id="lwUnArchiveCampaign-template">
             <h2>{{ __tr('Are You Sure!') }}</h2>
-            <p>{{ __tr('Are you sure you want to unarchive this Campaign?') }}</p>
+            <p>{{ __tr('Are you sure you want to unarchive this AutoCampaign?') }}</p>
     </script>
         <!-- /Campaign archive template -->
     </div>
@@ -144,7 +144,7 @@
                     });
             },
             error: function(error) {
-                toastr.error('Error fetching next campaign ID: ' + error);
+                toastr.error('Error fetching next AutoCampaign ID: ' + error);
             }
         });
     });

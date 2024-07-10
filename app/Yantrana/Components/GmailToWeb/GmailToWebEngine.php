@@ -5,7 +5,7 @@
 * This file is part of the Contact component.
 *-----------------------------------------------------------------------------*/
 
-namespace App\Yantrana\Components\EmailToWeb;
+namespace App\Yantrana\Components\GmailToWeb;
 
 use XLSXWriter;
 use Illuminate\Support\Arr;
@@ -22,7 +22,7 @@ use App\Yantrana\Components\Contact\Repositories\ContactLabelRepository;
 use App\Yantrana\Components\Contact\Repositories\GroupContactRepository;
 use App\Yantrana\Components\Contact\Repositories\ContactCustomFieldRepository;
 
-class EmailToWebEngine extends BaseEngine implements ContactEngineInterface
+class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
 {
     /**
      * @var EmailToWebRepository - Contact Repository

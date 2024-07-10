@@ -24,6 +24,7 @@ use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppServiceControlle
 use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppTemplateController;
 use App\Yantrana\Components\AutoCampaign\Controllers\AutoCampaignController;
 use App\Yantrana\Components\EmailToWeb\Controllers\EmailToWebController;
+use App\Yantrana\Components\GmailToWeb\Controllers\GmailToWebController;
 
 /*
 |--------------------------------------------------------------------------
@@ -672,7 +673,48 @@ Route::middleware([
             });
 
 
-            
+            Route::prefix('/gmailtoweb')->group(function () {
+
+                // Route::get('/list', [
+                //     EmailToWebController::class,
+                //     'showEmailToWebView',
+                // ])->name('vendor.emailtoweb.read.list_view');
+
+                // Route::get("/list-data", [
+                //     EmailToWebController::class,
+                //     'prepareEmailToWebList'
+                // ])->name('vendor.emailtoweb.read.list');
+
+
+                Route::get('/gmails/credentials', [
+                    GmailToWebController::class,
+                    'showCredentialsForm',
+                ])->name('vendor.gmailtoweb.gmails.credentials');
+
+                Route::post('/gmails/fetchWithCredentials', [
+                    GmailToWebController::class,
+                    'fetchGmailsWithCredentials',
+                ])->name('vendor.gmailtoweb.gmails.fetchWithCredentials');
+
+                // // Contact get the data
+                // Route::get('/{emailIdOrUid}/get-data', [
+                //     EmailToWebController::class,
+                //     'EmailToWebData',
+                // ])->name('vendor.emailtoweb.read.data');
+
+                // Route::post('/{emailIdOrUid}/delete-process', [
+                //     EmailToWebController::class,
+                //     'processEmailToWebDelete',
+                // ])->name('vendor.emailtoweb.delete');
+
+                // Route::post('/delete-selected-process', [
+                //     EmailToWebController::class,
+                //     'selectedEmailToWebDelete',
+                // ])->name('vendor.emailtoweb.selected.delete');
+
+                // Route::post('/vendor/emailtoweb/check-email-exists', [EmailToWebController::class, 'checkEmailExists'])->name('vendor.emailtoweb.checkEmailExists');
+
+            });
                 
             Route::prefix('/emailtoweb')->group(function () {
 
@@ -712,7 +754,9 @@ Route::middleware([
                     EmailToWebController::class,
                     'selectedEmailToWebDelete',
                 ])->name('vendor.emailtoweb.selected.delete');
-                
+
+                Route::post('/vendor/emailtoweb/check-email-exists', [EmailToWebController::class, 'checkEmailExists'])->name('vendor.emailtoweb.checkEmailExists');
+
             });
 
             // BotReply Routes Group Start

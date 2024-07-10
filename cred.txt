@@ -1,0 +1,6 @@
+username: superadmin@yourdomain.com
+Password: firstadmin123
+
+
+tallyconnectsdeveloper@gmail.com
+Irriion@2121#

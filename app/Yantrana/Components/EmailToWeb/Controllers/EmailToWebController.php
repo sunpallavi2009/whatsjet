@@ -7,6 +7,7 @@
 
 namespace App\Yantrana\Components\EmailToWeb\Controllers;
 
+use App\Models\EmailToWebLogin;
 use App\Models\EmailToWeb;
 use Illuminate\Http\Request;
 use Webklex\PHPIMAP\ClientManager;
@@ -50,11 +51,26 @@ class EmailToWebController extends BaseController
         return $this->loadView('email-to-web.list', $contactsRequiredEngineResponse->data());
     }
 
-    public function showCredentialsForm()
+    // public function showCredentialsForm()
+    // {
+    //     return view('email-to-web.emailsettings');
+    // }
+
+    public function checkEmailExists(Request $request)
     {
-        return view('email-to-web.emailsettings');
+        $email = $request->input('email');
+        $exists = EmailToWebLogin::where('username', $email)->exists();
+
+        return response()->json(['exists' => $exists]);
     }
 
+
+    public function showCredentialsForm()
+    {
+        $credentialsExist = EmailToWebLogin::exists();
+        return view('email-to-web.emailsettings', compact('credentialsExist'));
+    }
+    
     public function fetchEmailsWithCredentials(Request $request)
     {
         try {
@@ -64,20 +80,60 @@ class EmailToWebController extends BaseController
                 'password' => 'required|string',
             ]);
     
+            // Initialize host and port variables
+            $host = $port = null;
+    
+            // Check if the email exists in the database
+            $existingCredentials = EmailToWebLogin::where('username', $credentials['username'])->first();
+    
+            if ($existingCredentials) {
+                // Use existing credentials from the database
+                $host = $existingCredentials->host;
+                $port = $existingCredentials->port;
+            } else {
+                // Check if host and port are provided in the request
+                if ($request->has('host') && $request->has('port')) {
+                    $host = $request->input('host');
+                    $port = $request->input('port');
+                } else {
+                    // No credentials exist and no host/port provided
+                    session()->flash('error', 'IMAP host and port are required.');
+                    return redirect()->back();
+                }
+            }
+    
+            // Ensure host and port are not null
+            if (is_null($host) || is_null($port)) {
+                session()->flash('error', 'IMAP host and port are required.');
+                return redirect()->back();
+            }
+    
             \Log::info('Attempting to connect to IMAP server...');
+    
+            // Save the credentials to the email_to_web_login table if they are new
+            if (!$existingCredentials) {
+                EmailToWebLogin::updateOrCreate(
+                    ['username' => $credentials['username']],
+                    [
+                        'password' => $credentials['password'],
+                        'host' => $host,
+                        'port' => $port,
+                    ]
+                );
+            }
     
             // Create an instance of ClientManager
             $clientManager = new ClientManager();
     
             // Attempt to connect to IMAP server
             $client = $clientManager->make([
-                'host'          => 'irriion.com',
-                'port'          => 993,
-                'encryption'    => 'ssl',
+                'host' => $host,
+                'port' => $port,
+                'encryption' => 'ssl',
                 'validate_cert' => true,
-                'username'      => $credentials['username'],
-                'password'      => $credentials['password'],
-                'protocol'      => 'imap',
+                'username' => $credentials['username'],
+                'password' => $credentials['password'],
+                'protocol' => 'imap',
             ]);
     
             \Log::info('Attempting to connect...');
@@ -108,7 +164,7 @@ class EmailToWebController extends BaseController
                     $email = new EmailToWeb();
     
                     $email->vendors__id = 1;
-                    
+    
                     // Process From email address
                     $email->from_email = $fromEmail;
     
@@ -119,26 +175,53 @@ class EmailToWebController extends BaseController
                     $email->subject = $message->getSubject();
                     $email->body = $message->getTextBody(); // Example: Get text body of email
     
-                    // Handle attachments (example for PDF)
+                    // Initialize attachment details
+                    $attachmentsData = [];
+    
+                    // Handle attachments
                     $attachments = $message->getAttachments();
                     foreach ($attachments as $attachment) {
-                        if ($attachment->getMimeType() === 'application/pdf') {
-                            try {
-                                // Save PDF to storage and store path in database
-                                $path = $attachment->save(storage_path('app/public/attachments'));
-                
-                                // Verify and log the saved path
-                                \Log::info('PDF saved to: ' . $path);
-                
-                                // Store the path in the database field
-                                $email->pdf_attachment = $path;
-                            } catch (\Exception $e) {
-                                \Log::error('Error saving PDF attachment: ' . $e->getMessage());
-                                // Handle error as needed
-                            }
+                        // Save different types of attachments
+                        switch ($attachment->getMimeType()) {
+                            case 'application/pdf':
+                                $pdfPath = $attachment->save(storage_path('app/public/attachments'));
+                                $attachmentsData[] = [
+                                    'type' => 'pdf',
+                                    'original_name' => $attachment->getName(),
+                                    'path' => $pdfPath,
+                                    'url' => asset('storage/attachments/' . basename($pdfPath)), // Store PDF URL in array
+                                ];
+                                break;
+                            case 'image/jpeg':
+                            case 'image/png':
+                                $imagePath = $attachment->save(storage_path('app/public/images'));
+                                $attachmentsData[] = [
+                                    'type' => 'image',
+                                    'original_name' => $attachment->getName(),
+                                    'path' => $imagePath,
+                                    'url' => asset('storage/images/' . basename($imagePath)), // Store image URL in array
+                                ];
+                                break;
+                            case 'application/msword':
+                            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                $docPath = $attachment->save(storage_path('app/public/documents'));
+                                $attachmentsData[] = [
+                                    'type' => 'document',
+                                    'original_name' => $attachment->getName(),
+                                    'path' => $docPath,
+                                    'url' => asset('storage/documents/' . basename($docPath)), // Store document URL in array
+                                ];
+                                break;
+                            default:
+                                // Log unsupported MIME types
+                                \Log::warning("Unsupported attachment type: " . $attachment->getMimeType());
+                                // Handle other types or skip
+                                break;
                         }
-                        // Add logic for other attachment types if needed
                     }
+    
+                    // Save attachment details to database
+                    $email->pdf_attachment = json_encode($attachmentsData); // Store attachments data as JSON
     
                     // Save received date
                     $email->received_at = $receivedDate;
@@ -168,104 +251,6 @@ class EmailToWebController extends BaseController
         }
     }
     
-
-
-    // public function fetchEmailsWithCredentials(Request $request)
-    // {
-    //     try {
-    //         // Validate and get username and password from the request
-    //         $credentials = $request->validate([
-    //             'username' => 'required|string|email',
-    //             'password' => 'required|string',
-    //         ]);
-
-    //         \Log::info('Attempting to connect to IMAP server...');
-
-    //         // Create an instance of ClientManager
-    //         $clientManager = new ClientManager();
-
-    //         // Attempt to connect to IMAP server
-    //         $client = $clientManager->make([
-    //             'host'          => 'irriion.com',
-    //             'port'          => 993,
-    //             'encryption'    => 'ssl',
-    //             'validate_cert' => true,
-    //             'username'      => $credentials['username'],
-    //             'password'      => $credentials['password'],
-    //             'protocol'      => 'imap',
-    //         ]);
-
-    //         \Log::info('Attempting to connect...');
-
-    //         $client->connect(); // Connect to the IMAP server
-
-    //         \Log::info('Connected to IMAP server.');
-
-    //         $inbox = $client->getFolder('INBOX'); // Get the INBOX folder
-    //         $messages = $inbox->messages()->all()->get(); // Fetch all messages
-
-    //         \Log::info('Fetched messages from INBOX.');
-
-    //         foreach ($messages as $message) {
-    //             $email = new EmailToWeb();
-
-    //             $email->vendors__id = 1;
-                
-    //             // Process From email address
-    //             $from = $message->getFrom();
-    //             $email->from_email = $from[0]->mail;
-
-    //             // Process To email address
-    //             $to = $message->getTo();
-    //             $email->to_email = $to[0]->mail;
-
-    //             $email->subject = $message->getSubject();
-    //             $email->body = $message->getTextBody(); // Example: Get text body of email
-
-    //             // Handle attachments (example for PDF)
-    //             $attachments = $message->getAttachments();
-    //             foreach ($attachments as $attachment) {
-    //                 if ($attachment->getMimeType() === 'application/pdf') {
-    //                     try {
-    //                         // Save PDF to storage and store path in database
-    //                         $path = $attachment->save(storage_path('app/public/attachments'));
-            
-    //                         // Verify and log the saved path
-    //                         \Log::info('PDF saved to: ' . $path);
-            
-    //                         // Store the path in the database field
-    //                         $email->pdf_attachment = $path;
-    //                     } catch (\Exception $e) {
-    //                         \Log::error('Error saving PDF attachment: ' . $e->getMessage());
-    //                         // Handle error as needed
-    //                     }
-    //                 }
-    //                 // Add logic for other attachment types if needed
-    //             }
-
-    //             // Save received date
-    //             $email->received_at = $message->getDate();
-
-    //             $email->save();
-    //         }
-
-    //         \Log::info('Emails saved to database.');
-
-    //         session()->flash('success', 'Emails fetched and saved successfully.');
-
-    //         return redirect()->route('vendor.emailtoweb.read.list_view');
-
-    //     } catch (\Webklex\PHPIMAP\Exceptions\ConnectionFailedException $e) {
-    //         \Log::error("IMAP Connection Failed: " . $e->getMessage());
-    //         session()->flash('error', 'IMAP connection failed.');
-    //         return redirect()->back();
-    //     } catch (\Exception $e) {
-    //         \Log::error("An error occurred: " . $e->getMessage());
-    //         session()->flash('error', 'An error occurred.');
-    //         return redirect()->back();
-    //     }
-    // }
-
     /**
      * list of Contact
      *

@@ -226,7 +226,7 @@
                     <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }},{{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }} " href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
                         aria-expanded="false" aria-controls="vendorEmailToWebSubmenuNav">
                         <i class="fa fa-envelope text-dark"></i>
-                        <span class="">{{ __tr('Eamil To Web') }}</span>
+                        <span class="">{{ __tr('Email To Web') }}</span>
                     </a>
                     <div class="collapse lw-expandable-nav" id="vendorEmailToWebSubmenuNav">
                         <ul class="nav nav-sm flex-column">
@@ -240,6 +240,33 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }}"
                                     href="{{ route('vendor.emailtoweb.emails.credentials') }}">
+                                    <i class="fa fa-user-plus"></i>
+                                    {{ __tr('Settings') }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+
+                <li class="nav-item">
+                    <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }},{{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }} " href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="vendorEmailToWebSubmenuNav">
+                        <i class="fa fa-envelope text-dark"></i>
+                        <span class="">{{ __tr('Gmail To Web') }}</span>
+                    </a>
+                    <div class="collapse lw-expandable-nav" id="vendorEmailToWebSubmenuNav">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }}"
+                                    href="{{ route('vendor.emailtoweb.read.list_view') }}">
+                                    <i class="fa fa-list"></i>
+                                    {{ __tr('List') }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link {{ markAsActiveLink('vendor.gmailtoweb.gmails.credentials') }}"
+                                    href="{{ route('vendor.gmailtoweb.gmails.credentials') }}">
                                     <i class="fa fa-user-plus"></i>
                                     {{ __tr('Settings') }}
                                 </a>

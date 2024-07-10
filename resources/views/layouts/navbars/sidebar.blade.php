@@ -250,12 +250,12 @@
 
 
                 <li class="nav-item">
-                    <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }},{{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }} " href="#vendorEmailToWebSubmenuNav" data-toggle="collapse" role="button"
-                        aria-expanded="false" aria-controls="vendorEmailToWebSubmenuNav">
+                    <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }},{{ markAsActiveLink('vendor.emailtoweb.emails.credentials') }} " href="#vendorGmailToWebSubmenuNav" data-toggle="collapse" role="button"
+                        aria-expanded="false" aria-controls="vendorGmailToWebSubmenuNav">
                         <i class="fa fa-envelope text-dark"></i>
                         <span class="">{{ __tr('Gmail To Web') }}</span>
                     </a>
-                    <div class="collapse lw-expandable-nav" id="vendorEmailToWebSubmenuNav">
+                    <div class="collapse lw-expandable-nav" id="vendorGmailToWebSubmenuNav">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a class="nav-link {{ markAsActiveLink('vendor.emailtoweb.read.list_view') }}"

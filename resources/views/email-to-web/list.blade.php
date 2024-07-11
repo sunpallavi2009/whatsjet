@@ -159,7 +159,7 @@
                 <th data-orderable="true" data-name="to_email">{{ __tr('To Email') }}</th>
                 <th data-orderable="true" data-name="subject">{{ __tr('Subject') }}</th>
                 <th data-orderable="true" data-name="received_at">{{ __tr('Received On') }}</th>
-                <th data-orderable="true" data-name="testing">{{ __tr('Testing') }}</th>
+                <th data-orderable="true" data-name="testing">{{ __tr('Status') }}</th>
                 <th data-template="#emailActionColumnTemplate" name="null">{{ __tr('Action') }}</th>
             </x-lw.datatable>
         </div>

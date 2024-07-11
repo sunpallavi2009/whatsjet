@@ -51,11 +51,6 @@ class EmailToWebController extends BaseController
         return $this->loadView('email-to-web.list', $contactsRequiredEngineResponse->data());
     }
 
-    // public function showCredentialsForm()
-    // {
-    //     return view('email-to-web.emailsettings');
-    // }
-
     public function checkEmailExists(Request $request)
     {
         $email = $request->input('email');

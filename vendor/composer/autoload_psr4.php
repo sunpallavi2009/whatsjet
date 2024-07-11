@@ -67,6 +67,7 @@ return array(
     'Propaganistas\\LaravelDisposableEmail\\' => array($vendorDir . '/propaganistas/laravel-disposable-email/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'PhpOption\\' => array($vendorDir . '/phpoption/phpoption/src/PhpOption'),
+    'PhpImap\\' => array($vendorDir . '/php-imap/php-imap/src/PhpImap'),
     'ParagonIE\\ConstantTime\\' => array($vendorDir . '/paragonie/constant_time_encoding/src'),
     'NunoMaduro\\Collision\\' => array($vendorDir . '/nunomaduro/collision/src'),
     'Netflie\\WhatsAppCloudApi\\' => array($vendorDir . '/netflie/whatsapp-cloud-api/src'),

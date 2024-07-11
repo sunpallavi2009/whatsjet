@@ -11,7 +11,7 @@
     <div class="row">
         <div class="col-xl-12 mb-3">
             <div class="float-right">
-                <!-- Any additional content or controls can be placed here -->
+                <!-- Additional content or controls can go here -->
             </div>
         </div>
 
@@ -58,23 +58,21 @@
 
 @push('appScripts')
 <script>
-        // Toggle password visibility
-        togglePassword.addEventListener('click', function () {
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            this.classList.toggle('fa-eye-slash'); // Toggle the eye icon class
-        });
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
 
-        // Toastr notifications
-        @if(session()->has('success'))
-            toastr.success('{{ session('success') }}');
-        @endif
+    // Toastr notifications
+    @if(session()->has('success'))
+        toastr.success('{{ session('success') }}');
+    @endif
 
-        @if(session()->has('error'))
-            toastr.error('{{ session('error') }}');
-        @endif
-    
+    @if(session()->has('error'))
+        toastr.error('{{ session('error') }}');
+    @endif
 </script>
-
 @endpush
 @endsection

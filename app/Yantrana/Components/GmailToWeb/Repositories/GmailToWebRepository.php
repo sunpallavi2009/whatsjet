@@ -5,27 +5,27 @@
 * This file is part of the Contact component.
 *-----------------------------------------------------------------------------*/
 
-namespace App\Yantrana\Components\EmailToWeb\Repositories;
+namespace App\Yantrana\Components\GmailToWeb\Repositories;
 
 use App\Yantrana\Base\BaseRepository;
 use App\Yantrana\Components\Contact\Interfaces\ContactRepositoryInterface;
-use App\Yantrana\Components\EmailToWeb\Models\EmailToWebModel;
+use App\Yantrana\Components\GmailToWeb\Models\GmailToWebModel;
 
-class EmailToWebRepository extends BaseRepository implements ContactRepositoryInterface
+class GmailToWebRepository extends BaseRepository implements ContactRepositoryInterface
 {
     /**
      * primary model instance
      *
      * @var object
      */
-    protected $primaryModel = EmailToWebModel::class;
+    protected $primaryModel = GmailToWebModel::class;
 
     /**
      * Fetch contact datatable source
      *
      * @return mixed
      *---------------------------------------------------------------- */
-    public function fetchEmailToWebDataTableSource($groupContactIds = null, $contactGroupUid = null)
+    public function fetchGmailToWebDataTableSource($groupContactIds = null, $contactGroupUid = null)
     {
         // basic configurations for dataTables data
         $dataTableConfig = [
@@ -52,10 +52,10 @@ class EmailToWebRepository extends BaseRepository implements ContactRepositoryIn
         return $query->dataTables($dataTableConfig)->toArray();
     }
 
-    public function deleteEmailToWeb($emailtoweb)
+    public function deleteGmailToWeb($gmailtoweb)
     {
         // Check if $contact deleted
-        if ($emailtoweb->deleteIt()) {
+        if ($gmailtoweb->deleteIt()) {
             // if deleted
             return true;
         }
@@ -69,11 +69,11 @@ class EmailToWebRepository extends BaseRepository implements ContactRepositoryIn
     //     return EmailToWebModel::where('id', $emailIdOrUid)->first();
     // }
 
-    public function deleteSelectedEmailToWeb(array $emailIdOrUid, int|null $vendorId = null)
+    public function deleteSelectedGmailToWeb(array $gmailIdOrUid, int|null $vendorId = null)
     {
         return $this->primaryModel::where([
             'vendors__id' => $vendorId ?: getVendorId()
-        ])->whereIn('id', $emailIdOrUid)->delete();
+        ])->whereIn('id', $gmailIdOrUid)->delete();
     }
 
     

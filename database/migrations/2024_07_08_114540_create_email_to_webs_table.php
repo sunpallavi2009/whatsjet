@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('to_email');
             $table->string('subject');
             $table->text('body')->nullable();
-            $table->string('pdf_attachment')->nullable();
+            $table->text('pdf_attachment')->nullable();
             $table->timestamp('received_at')->nullable();
             $table->timestamps();
         });

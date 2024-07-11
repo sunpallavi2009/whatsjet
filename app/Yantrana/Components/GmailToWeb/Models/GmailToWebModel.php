@@ -5,7 +5,7 @@
 * This file is part of the Contact component.
 *-----------------------------------------------------------------------------*/
 
-namespace App\Yantrana\Components\EmailToWeb\Models;
+namespace App\Yantrana\Components\GmailToWeb\Models;
 
 use App\Yantrana\Base\BaseModel;
 use App\Yantrana\Components\Auth\Models\AuthModel;
@@ -18,12 +18,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class EmailToWebModel extends BaseModel
+class GmailToWebModel extends BaseModel
 {
     /**
      * @var string - The database table used by the model.
      */
-    protected $table = 'email_to_webs';
+    protected $table = 'gmail_to_webs';
 
     /**
      * Datatable Result counts also its max result per request.

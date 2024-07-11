@@ -675,15 +675,15 @@ Route::middleware([
 
             Route::prefix('/gmailtoweb')->group(function () {
 
-                // Route::get('/list', [
-                //     EmailToWebController::class,
-                //     'showEmailToWebView',
-                // ])->name('vendor.emailtoweb.read.list_view');
+                Route::get('/list', [
+                    GmailToWebController::class,
+                    'showGmailToWebView',
+                ])->name('vendor.gmailtoweb.read.list_view');
 
-                // Route::get("/list-data", [
-                //     EmailToWebController::class,
-                //     'prepareEmailToWebList'
-                // ])->name('vendor.emailtoweb.read.list');
+                Route::get("/list-data", [
+                    GmailToWebController::class,
+                    'prepareGmailToWebList'
+                ])->name('vendor.gmailtoweb.read.list');
 
 
                 Route::get('/gmails/credentials', [
@@ -696,21 +696,21 @@ Route::middleware([
                     'fetchGmailsWithCredentials',
                 ])->name('vendor.gmailtoweb.gmails.fetchWithCredentials');
 
-                // // Contact get the data
-                // Route::get('/{emailIdOrUid}/get-data', [
-                //     EmailToWebController::class,
-                //     'EmailToWebData',
-                // ])->name('vendor.emailtoweb.read.data');
+                // Contact get the data
+                Route::get('/{gmailIdOrUid}/get-data', [
+                    GmailToWebController::class,
+                    'GmailToWebData',
+                ])->name('vendor.gmailtoweb.read.data');
 
-                // Route::post('/{emailIdOrUid}/delete-process', [
-                //     EmailToWebController::class,
-                //     'processEmailToWebDelete',
-                // ])->name('vendor.emailtoweb.delete');
+                Route::post('/{gmailIdOrUid}/delete-process', [
+                    GmailToWebController::class,
+                    'processGmailToWebDelete',
+                ])->name('vendor.gmailtoweb.delete');
 
-                // Route::post('/delete-selected-process', [
-                //     EmailToWebController::class,
-                //     'selectedEmailToWebDelete',
-                // ])->name('vendor.emailtoweb.selected.delete');
+                Route::post('/delete-selected-process', [
+                    GmailToWebController::class,
+                    'selectedGmailToWebDelete',
+                ])->name('vendor.gmailtoweb.selected.delete');
 
                 // Route::post('/vendor/emailtoweb/check-email-exists', [EmailToWebController::class, 'checkEmailExists'])->name('vendor.emailtoweb.checkEmailExists');
 

@@ -15,7 +15,7 @@ use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
 use App\Yantrana\Components\User\Repositories\UserRepository;
 use App\Yantrana\Support\Country\Repositories\CountryRepository;
 use App\Yantrana\Components\Contact\Repositories\LabelRepository;
-use App\Yantrana\Components\EmailToWeb\Repositories\EmailToWebRepository;
+use App\Yantrana\Components\GmailToWeb\Repositories\GmailToWebRepository;
 use App\Yantrana\Components\Contact\Interfaces\ContactEngineInterface;
 use App\Yantrana\Components\Contact\Repositories\ContactGroupRepository;
 use App\Yantrana\Components\Contact\Repositories\ContactLabelRepository;
@@ -25,9 +25,9 @@ use App\Yantrana\Components\Contact\Repositories\ContactCustomFieldRepository;
 class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
 {
     /**
-     * @var EmailToWebRepository - Contact Repository
+     * @var GmailToWebRepository - Contact Repository
      */
-    protected $emailToWebRepository;
+    protected $gmailToWebRepository;
 
     /**
      * @var ContactGroupRepository - ContactGroup Repository
@@ -59,7 +59,7 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
     /**
      * Constructor
      *
-     * @param  EmailToWebRepository  $emailToWebRepository  - Contact Repository
+     * @param  GmailToWebRepository  $gmailToWebRepository  - Contact Repository
      * @param  ContactGroupRepository  $contactGroupRepository  - ContactGroup Repository
      * @param  GroupContactRepository  $groupContactRepository  - Group Contacts Repository
      * @param  ContactCustomFieldRepository  $contactCustomFieldRepository  - Contacts Custom  Fields Repository
@@ -70,7 +70,7 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
      * @return void
      *-----------------------------------------------------------------------*/
     public function __construct(
-        EmailToWebRepository $emailToWebRepository,
+        GmailToWebRepository $gmailToWebRepository,
         ContactGroupRepository $contactGroupRepository,
         GroupContactRepository $groupContactRepository,
         ContactCustomFieldRepository $contactCustomFieldRepository,
@@ -78,7 +78,7 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         LabelRepository $labelRepository,
         ContactLabelRepository $contactLabelRepository,
     ) {
-        $this->emailToWebRepository = $emailToWebRepository;
+        $this->gmailToWebRepository = $gmailToWebRepository;
         $this->contactGroupRepository = $contactGroupRepository;
         $this->groupContactRepository = $groupContactRepository;
         $this->contactCustomFieldRepository = $contactCustomFieldRepository;
@@ -93,14 +93,14 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
      * @return array
      *---------------------------------------------------------------- */
 
-    public function prepareEmailToWebDataTableSource($contactGroupUid = null)
+    public function prepareGmailToWebDataTableSource($contactGroupUid = null)
     {
         $groupContactIds = [];
     
         // Fetch data based on group UID if provided
         if ($contactGroupUid) {
             $vendorId = getVendorId();
-            $groupContacts = $this->emailToWebRepository->fetchItAll([
+            $groupContacts = $this->gmailToWebRepository->fetchItAll([
                 'contact_groups__id' => $contactGroupUid,
                 'vendors__id' => $vendorId,
             ]);
@@ -109,7 +109,7 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         }
     
         // Fetch email data for DataTables
-        $emailData = $this->emailToWebRepository->fetchEmailToWebDataTableSource($groupContactIds, $contactGroupUid);
+        $gmailData = $this->gmailToWebRepository->fetchGmailToWebDataTableSource($groupContactIds, $contactGroupUid);
     
         // Required columns for DataTables display
         $requiredColumns = [
@@ -141,7 +141,7 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         ];
     
         // Prepare data for DataTables response
-        return $this->dataTableResponse($emailData, $requiredColumns);
+        return $this->dataTableResponse($gmailData, $requiredColumns);
     }
      
 
@@ -172,25 +172,25 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         ]);
     }
 
-    public function prepareEmailToWebUpdateData($emailIdOrUid)
+    public function prepareGmailToWebUpdateData($gmailIdOrUid)
     {
-        $emailtoweb = $this->emailToWebRepository->fetchIt($emailIdOrUid);
-        if (__isEmpty($emailtoweb)) {
-            return $this->engineResponse(18, null, __tr('Email To Web not found.'));
+        $gmailtoweb = $this->gmailToWebRepository->fetchIt($gmailIdOrUid);
+        if (__isEmpty($gmailtoweb)) {
+            return $this->engineResponse(18, null, __tr('Gmail To Web not found.'));
         }
 
-        $emailtowebArray = $emailtoweb->toArray();
-        return $this->engineSuccessResponse(array_merge($emailtowebArray));
+        $gmailtowebArray = $gmailtoweb->toArray();
+        return $this->engineSuccessResponse(array_merge($gmailtowebArray));
     }
 
-    public function processEmailToWebDelete($emailIdOrUid)
+    public function processGmailToWebDelete($gmailIdOrUid)
     {
         // fetch the record
-        $emailtoweb = $this->emailToWebRepository->fetchIt($emailIdOrUid);
+        $gmailtoweb = $this->gmailToWebRepository->fetchIt($gmailIdOrUid);
         // check if the record found
-        if (__isEmpty($emailtoweb)) {
+        if (__isEmpty($gmailtoweb)) {
             // if not found
-            return $this->engineResponse(18, null, __tr('Email To Web not found'));
+            return $this->engineResponse(18, null, __tr('Gmail To Web not found'));
         }
 
         // if(getVendorSettings('test_recipient_contact') == $contact->_uid) {
@@ -198,18 +198,18 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         // }
 
         // ask to delete the record
-        if ($this->emailToWebRepository->deleteIt($emailtoweb)) {
+        if ($this->gmailToWebRepository->deleteIt($gmailtoweb)) {
             // if successful
-            return $this->engineSuccessResponse([], __tr('Email To Web deleted successfully'));
+            return $this->engineSuccessResponse([], __tr('Gmail To Web deleted successfully'));
         }
 
         // if failed to delete
-        return $this->engineFailedResponse([], __tr('Failed to delete Email To Web'));
+        return $this->engineFailedResponse([], __tr('Failed to delete Gmail To Web'));
     }
 
-    public function processSelectedEmailToWebDelete($request)
+    public function processSelectedGmailToWebDelete($request)
     {
-        $selectedEmailToWeb = $request->get('selected_emailtoweb');
+        $selectedGmailToWeb = $request->get('selected_gmailtoweb');
         $message = '';
         // check for test number
         // if(in_array(getVendorSettings('test_recipient_contact'), $selectedContactUids)) {
@@ -221,18 +221,18 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
         //         return $this->engineFailedResponse([], __tr('As selected is test contact it can not be deleted.'));
         //     }
         // }
-        if(empty($selectedEmailToWeb)) {
+        if(empty($selectedGmailToWeb)) {
             return $this->engineFailedResponse([], __tr('Nothing to delete'));
         }
         // ask to delete the record
-        if ($this->emailToWebRepository->deleteSelectedEmailToWeb($selectedEmailToWeb)) {
+        if ($this->gmailToWebRepository->deleteSelectedGmailToWeb($selectedGmailToWeb)) {
             // if successful
             return $this->engineSuccessResponse([
-                'reloadDatatableId' => '#lwEmailToWebList'
-            ], __tr('Email To Web deleted successfully.') . $message);
+                'reloadDatatableId' => '#lwGmailToWebList'
+            ], __tr('Gmail To Web deleted successfully.') . $message);
         }
         // if failed to delete
-        return $this->engineFailedResponse([], __tr('Failed to delete Email To Web'));
+        return $this->engineFailedResponse([], __tr('Failed to delete Gmail To Web'));
     }
 
 }

@@ -14,9 +14,10 @@
 <div class="container-fluid mt-lg--6">
     <div class="row">
         <!-- button -->
-        <div class="col-xl-12 mb-3 mt-4">
+        <div class="col-xl-12 mb-3">
             <div class="float-right">
-                
+                <a class="lw-btn btn btn-primary" href="{{ route('vendor.gmailtoweb.gmails.credentials') }}">{{
+                    __tr('Fetch Gmail') }}</a>
             </div>
         </div>
 

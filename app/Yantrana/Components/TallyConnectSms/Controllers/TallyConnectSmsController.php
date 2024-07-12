@@ -46,7 +46,6 @@ class TallyConnectSmsController extends BaseController
         $validator = Validator::make($request->all(), [
             'phone' => 'required|numeric|digits:10',
             'message' => 'required|string|min:20',
-            // Add more validation rules as needed
         ]);
 
         if ($validator->fails()) {

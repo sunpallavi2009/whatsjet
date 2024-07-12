@@ -3,7 +3,7 @@
 @section('content')
 @include('users.partials.header', [
     'title' => 'TallyConnects SMS',
-    'description' => 'Enter SMTP credentials and email address to fetch emails.',
+    'description' => 'Enter Phone Number and Message to Send Msg.',
     'class' => 'col-lg-7'
 ])
 <div class="container-fluid mt-lg--6">
@@ -22,11 +22,26 @@
 
                             <div class="form-group">
                                 <label for="phone">{{ __tr('Phone Number') }}</label>
-                                <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone') }}" required pattern="\d{10}" title="Please enter exactly 10 digits" placeholder="Please enter exactly 10 digits">
+                                <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone') }}" required title="Please enter exactly 10 digits" placeholder="Please enter exactly 10 digits">
                                 @error('phone')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
+
+                            <div class="form-group">
+                                <label for="message">{{ __tr('Message') }}</label>
+                                <textarea id="message" name="message" class="form-control" required placeholder="Enter your message">{{ old('message') }}</textarea>
+                                @error('message')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            {{-- <div class="form-group">
+                                <label for="message">{{ __tr('Message') }}</label>
+                                <textarea id="message" name="message" class="form-control" required placeholder="Enter your message">{{ old('message') }}</textarea>
+                                @error('message')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                            </div> --}}
 
                             <!-- Add more form fields as needed -->
 

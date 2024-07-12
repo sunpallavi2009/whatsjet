@@ -44,7 +44,8 @@ class TallyConnectSmsController extends BaseController
     {
         // Validate the incoming request
         $validator = Validator::make($request->all(), [
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|digits:10',
+            'message' => 'required|string|min:20',
             // Add more validation rules as needed
         ]);
 
@@ -53,8 +54,11 @@ class TallyConnectSmsController extends BaseController
         }
 
         // Generate OTP logic (if needed)
-        $otp_number = "0000";
-        $otp = $otp_number . " is your OTP for TallyConnects Software Activation. OTP is valid for 10 minutes. Regards TallyConnects";
+        // $otp_number = "0000";
+        // $otp = $otp_number . " is your OTP for TallyConnects Software Activation. OTP is valid for 10 minutes. Regards TallyConnects";
+        $message = $request->input('message');
+        // dd($message);
+        // $message = "0000 is your OTP for TallyConnects Software Activation. OTP is valid for 10 minutes. Regards TallyConnects";
 
         // SMS Gateway API configuration
         $api_key = '1563752033911917499';
@@ -75,10 +79,10 @@ class TallyConnectSmsController extends BaseController
                 'userId' => 'irriion',
                 'password' => 'Excel@123#',
                 'mobile' => '91' . $contacts,
-                'msg' => $otp,
+                'msg' => $message,
                 'senderId' => $from,
                 'msgType' => 'text',
-                'duplicateCheck' => true,
+                'duplicateCheck' => 'true',
                 'format' => 'json',
                 'sendMethod' => 'simpleMsg',
             )),

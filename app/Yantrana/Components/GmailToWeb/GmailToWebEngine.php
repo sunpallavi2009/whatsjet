@@ -235,7 +235,9 @@ class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
                 // Check for keywords in both subject and body
                 if (strpos($subject, 'inquiry') !== false || strpos($body, 'inquiry') !== false) {
                     return 'Inquiry';
-                } elseif (strpos($subject, 'issue') !== false || strpos($body, 'issue') !== false) {
+                } elseif (strpos($subject, 'buy') !== false || strpos($body, 'buy') !== false) {
+                    return 'Inquiry';
+                }  elseif (strpos($subject, 'issue') !== false || strpos($body, 'issue') !== false) {
                     return 'Support';
                 } elseif (strpos($subject, 'problem') !== false || strpos($body, 'problem') !== false) {
                     return 'Support';

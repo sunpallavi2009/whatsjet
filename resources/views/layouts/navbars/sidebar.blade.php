@@ -275,6 +275,14 @@
                     </div>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link {{ markAsActiveLink('vendor.tallyconnectsms.read.list_view') }}"
+                        href="{{ route('vendor.tallyconnectsms.read.list_view') }}">
+                        <i class="fa fa-robot"></i>
+                        {{ __tr('TallyConnects SMS') }}
+                    </a>
+                </li>
+
 
 
                 @if (hasVendorAccess('manage_contacts'))

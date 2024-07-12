@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\FetchGmails::class,
     ];
 
     /**
@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             return app()->make(\App\Yantrana\Components\WhatsAppService\WhatsAppServiceEngine::class)->processCampaignSchedule();
         })->everyTwoSeconds();
+
     }
 
     /**

@@ -7,6 +7,10 @@
 
 namespace App\Yantrana\Components\GmailToWeb;
 
+use Illuminate\Support\Facades\Log;
+use App\Models\GmailToWebLogin;
+use App\Models\GmailToWeb;
+use Webklex\PHPIMAP\ClientManager;
 use XLSXWriter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -24,6 +28,110 @@ use App\Yantrana\Components\Contact\Repositories\ContactCustomFieldRepository;
 
 class GmailToWebEngine extends BaseEngine implements ContactEngineInterface
 {
+
+    public function fetchGmails()
+    {
+        $logins = GmailToWebLogin::all();
+        
+        foreach ($logins as $login) {
+            try {
+                $clientManager = new ClientManager();
+
+                $client = $clientManager->make([
+                    'host' => $login->host,
+                    'port' => $login->port,
+                    'encryption' => 'ssl',
+                    'validate_cert' => true,
+                    'username' => $login->username,
+                    'password' => decrypt($login->password),
+                    'protocol' => 'imap',
+                ]);
+
+                $client->connect(); 
+
+                $inbox = $client->getFolder('INBOX'); 
+                $messages = $inbox->messages()->all()->get(); 
+
+                $newGmailsCount = 0;
+                $existingGmailsCount = 0;
+
+                foreach ($messages as $message) {
+                    $receivedDate = $message->getDate();
+                    $from = $message->getFrom();
+                    $fromEmail = $from[0]->mail;
+
+                    $existingGmail = GmailToWeb::where('received_at', $receivedDate)
+                        ->where('from_email', $fromEmail)
+                        ->first();
+
+                    if (!$existingGmail) {
+                        $email = new GmailToWeb();
+                        $email->vendors__id = 1;
+                        $email->from_email = $fromEmail;
+                        $to = $message->getTo();
+                        $email->to_email = $to[0]->mail;
+                        $email->subject = $message->getSubject();
+                        $email->body = $message->getTextBody();
+                        $attachmentsData = [];
+
+                        $attachments = $message->getAttachments();
+                        foreach ($attachments as $attachment) {
+                            switch ($attachment->getMimeType()) {
+                                case 'application/pdf':
+                                    $pdfPath = $attachment->save(storage_path('app/public/attachments'));
+                                    $attachmentsData[] = [
+                                        'type' => 'pdf',
+                                        'original_name' => $attachment->getName(),
+                                        'path' => $pdfPath,
+                                        'url' => asset('storage/attachments/' . basename($pdfPath)),
+                                    ];
+                                    break;
+                                case 'image/jpeg':
+                                case 'image/png':
+                                    $imagePath = $attachment->save(storage_path('app/public/images'));
+                                    $attachmentsData[] = [
+                                        'type' => 'image',
+                                        'original_name' => $attachment->getName(),
+                                        'path' => $imagePath,
+                                        'url' => asset('storage/images/' . basename($imagePath)),
+                                    ];
+                                    break;
+                                case 'application/msword':
+                                case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                    $docPath = $attachment->save(storage_path('app/public/documents'));
+                                    $attachmentsData[] = [
+                                        'type' => 'document',
+                                        'original_name' => $attachment->getName(),
+                                        'path' => $docPath,
+                                        'url' => asset('storage/documents/' . basename($docPath)),
+                                    ];
+                                    break;
+                                default:
+                                    Log::warning("Unsupported attachment type: " . $attachment->getMimeType());
+                                    break;
+                            }
+                        }
+
+                        $email->attachments = json_encode($attachmentsData);
+                        $email->received_at = $receivedDate;
+                        $email->save();
+                        $newGmailsCount++;
+                    } else {
+                        $existingGmailsCount++;
+                    }
+                }
+
+                Log::info("New gmails: $newGmailsCount, Existing gmails: $existingGmailsCount");
+            } catch (ConnectionFailedException $e) {
+                Log::error('Connection failed: ' . $e->getMessage());
+            } catch (AuthenticationFailedException $e) {
+                Log::error('Authentication failed: ' . $e->getMessage());
+            } catch (\Exception $e) {
+                Log::error('An error occurred: ' . $e->getMessage());
+            }
+        }
+    }
+
     /**
      * @var GmailToWebRepository - Contact Repository
      */

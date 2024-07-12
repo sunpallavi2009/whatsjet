@@ -25,6 +25,7 @@ use App\Yantrana\Components\WhatsAppService\Controllers\WhatsAppTemplateControll
 use App\Yantrana\Components\AutoCampaign\Controllers\AutoCampaignController;
 use App\Yantrana\Components\EmailToWeb\Controllers\EmailToWebController;
 use App\Yantrana\Components\GmailToWeb\Controllers\GmailToWebController;
+use App\Yantrana\Components\TallyConnectSms\Controllers\TallyConnectSmsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -670,6 +671,20 @@ Route::middleware([
                     ])->name('vendor.whatsapp_service.templates.write.update');
 
                 });
+            });
+
+            Route::prefix('/tallyconnectsms')->group(function () {
+
+                Route::get('/tallyconnectsms', [
+                    TallyConnectSmsController::class,
+                    'showTallyConnectSMSView',
+                ])->name('vendor.tallyconnectsms.read.list_view');
+
+                Route::post('/tallyconnectsms/send-sms', [
+                    TallyConnectSmsController::class,
+                    'showTallyConnectSendSms',
+                ])->name('vendor.tallyconnectsms.read.sendsms');
+
             });
 
 

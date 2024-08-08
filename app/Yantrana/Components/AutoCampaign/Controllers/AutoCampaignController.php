@@ -131,10 +131,10 @@ class AutoCampaignController extends BaseController
 
             \Log::info('Sending message with data:', $data);
 
-            $response = $client->post(route('api.vendor.chat_template_queue_message.send.process', ['vendorUid' => 'fecff537-f086-427f-836b-889a0e2bc5ff']), [
+            $response = $client->post(route('api.vendor.chat_template_queue_message.send.process', ['vendorUid' => '12839dbb-afca-4a17-8257-84dd473e4738']), [
                 'json' => $data,
                 'headers' => [
-                    'Authorization' => 'Bearer j90nUsMdOvqBDJawwJkCXxnCcMyPodzjVlmq0FzOUgWDTyQn4uOuknTPPcrs0seI',
+                    'Authorization' => 'Bearer 5O0ujTkLN64sevAJSRIl7x9DwExiWwuh8Iu3YkeZAiQCFtRKwcsy7p0KOPKlUEv9',
                     'Accept' => 'application/json',
                 ],
             ]);

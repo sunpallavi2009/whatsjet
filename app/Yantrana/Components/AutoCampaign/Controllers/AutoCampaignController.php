@@ -88,7 +88,7 @@ class AutoCampaignController extends BaseController
                 return response()->json(['error' => 'Campaign not found'], 404);
             }
 
-            $response = Http::get('https://irriion.com/data.json');
+            $response = Http::get('https://www.tcsion.com/iONBizServices/iONWebService?u=o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ&apiKey=tV1gwVjXJkx4mfNyyXHlwA%3D%3D&servicekey=zbMGm2LerdEvF8kg2MzJIg%3D%3D&OverdueDays=1');
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -127,7 +127,8 @@ class AutoCampaignController extends BaseController
     
             $data = [
                 'from_phone_number_id' => '',
-                'phone_number' => $entry['phone'],
+                // 'phone_number' => $entry['phone'],
+                'phone_number' => '919156526284',
                 'template_name' => 'paymentreminder_1',
                 'template_language' => 'en',
                 'field_1' => $entry['Party_Description'],

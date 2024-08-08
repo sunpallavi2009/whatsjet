@@ -76,8 +76,6 @@ class AutoCampaignController extends BaseController
     
         return response()->json(['nextCampaignId' => $nextCampaignId]);
     }
-
-
     public function fetchAndSend(Request $request)
     {
         try {
@@ -91,9 +89,7 @@ class AutoCampaignController extends BaseController
             $url = 'https://www.tcsion.com/iONBizServices/iONWebService?u=o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ&apiKey=tV1gwVjXJkx4mfNyyXHlwA%3D%3D&servicekey=zbMGm2LerdEvF8kg2MzJIg%3D%3D&OverdueDays=1';
             \Log::info('Fetching data from API', ['url' => $url]);
     
-            $response = Http::withHeaders([
-                // Add any required headers here
-            ])->get($url);
+            $response = Http::get($url);
     
             \Log::info('API response status', ['status' => $response->status()]);
             \Log::info('API response body', ['body' => $response->body()]);
@@ -108,7 +104,11 @@ class AutoCampaignController extends BaseController
     
                 return response()->json(['message' => 'Data processed successfully']);
             } else {
-                \Log::error('Failed to fetch data', ['details' => $response->body()]);
+                \Log::error('Failed to fetch data', [
+                    'status' => $response->status(),
+                    'headers' => $response->headers(),
+                    'body' => $response->body()
+                ]);
                 return response()->json(['error' => 'Failed to fetch data', 'details' => $response->body()], $response->status());
             }
         } catch (\Exception $e) {

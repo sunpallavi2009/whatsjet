@@ -80,13 +80,27 @@ class AutoCampaignController extends BaseController
     {
         try {
             $campaigns__id = $request->query('campaigns__id', 1); // Default to 1 if not provided
-    
+            
             if (!$this->campaignExists($campaigns__id)) {
                 \Log::error('Campaign not found', ['campaigns__id' => $campaigns__id]);
                 return response()->json(['error' => 'Campaign not found'], 404);
             }
     
-            $url = 'https://www.tcsion.com/iONBizServices/iONWebService?u=o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ&apiKey=tV1gwVjXJkx4mfNyyXHlwA%3D%3D&servicekey=zbMGm2LerdEvF8kg2MzJIg%3D%3D&OverdueDays=1';
+            // Define the API credentials and parameters
+            $u = 'o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ';
+            $apiKey = 'tV1gwVjXJkx4mfNyyXHlwA%3D%3D';
+            $servicekey = 'zbMGm2LerdEvF8kg2MzJIg%3D%3D';
+            $overdueDays = 1; // You can also make this dynamic if needed
+    
+            // Build the URL with parameters
+            $url = sprintf(
+                'https://www.tcsion.com/iONBizServices/iONWebService?u=%s&apiKey=%s&servicekey=%s&OverdueDays=%d',
+                urlencode($u),
+                urlencode($apiKey),
+                urlencode($servicekey),
+                $overdueDays
+            );
+    
             \Log::info('Fetching data from API', ['url' => $url]);
     
             $response = Http::get($url);
@@ -117,6 +131,7 @@ class AutoCampaignController extends BaseController
             return response()->json(['error' => 'Failed to fetch and send data', 'details' => $e->getMessage()], 500);
         }
     }
+    
     
     
 

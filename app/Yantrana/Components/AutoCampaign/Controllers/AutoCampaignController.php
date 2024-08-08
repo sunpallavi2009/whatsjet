@@ -77,26 +77,27 @@ class AutoCampaignController extends BaseController
         return response()->json(['nextCampaignId' => $nextCampaignId]);
     }
     
+   
     public function fetchAndSend(Request $request)
     {
         try {
             $campaigns__id = $request->query('campaigns__id', 1); // Default to 1 if not provided
-    
+
             if (!$this->campaignExists($campaigns__id)) {
                 \Log::error('Campaign not found', ['campaigns__id' => $campaigns__id]);
                 return response()->json(['error' => 'Campaign not found'], 404);
             }
-    
+
             $response = Http::get('https://irriion.com/data.json');
-    
+
             if ($response->successful()) {
                 $data = $response->json();
-    
+
                 foreach ($data as $entry) {
                     \Log::info('Fetched entry:', $entry);
                     $this->sendTemplateMessage($entry, $campaigns__id); // Pass campaigns__id here
                 }
-    
+
                 return response()->json(['message' => 'Data processed successfully']);
             } else {
                 \Log::error('Failed to fetch data', ['details' => $response->body()]);
@@ -107,11 +108,16 @@ class AutoCampaignController extends BaseController
             return response()->json(['error' => 'Failed to fetch and send data', 'details' => $e->getMessage()], 500);
         }
     }
-    
+
     private function campaignExists($campaigns__id)
     {
-        // Assuming you have a Campaign model to check for existence
-        return \App\Models\Campaign::where('id', $campaigns__id)->exists();
+        try {
+            // Assuming the column name is 'campaigns__id' in the 'campaigns' table
+            return DB::table('campaigns')->where('campaigns__id', $campaigns__id)->exists();
+        } catch (\Exception $e) {
+            \Log::error('Exception occurred while checking campaign existence', ['error' => $e->getMessage()]);
+            return false;
+        }
     }
     
     private function sendTemplateMessage($entry, $campaigns__id)

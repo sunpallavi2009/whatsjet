@@ -113,7 +113,7 @@ class AutoCampaignController extends BaseController
     {
         try {
             // Assuming the column name is 'campaigns__id' in the 'campaigns' table
-            return DB::table('campaigns')->where('_id ', $campaigns__id)->exists();
+            return DB::table('campaigns')->where('_id', $campaigns__id)->exists();
         } catch (\Exception $e) {
             \Log::error('Exception occurred while checking campaign existence', ['error' => $e->getMessage()]);
             return false;

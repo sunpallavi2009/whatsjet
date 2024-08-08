@@ -76,72 +76,46 @@ class AutoCampaignController extends BaseController
     
         return response()->json(['nextCampaignId' => $nextCampaignId]);
     }
-    
-    public function fetchAndSend(Request $request)
-    {
-        try {
-            $campaigns__id = $request->query('campaigns__id', 1); // Default to 1 if not provided
-    
-            if (!$this->campaignExists($campaigns__id)) {
-                \Log::error('Campaign not found', ['campaigns__id' => $campaigns__id]);
-                return response()->json(['error' => 'Campaign not found'], 404);
-            }
-    
-            $response = Http::get('https://www.tcsion.com/iONBizServices/iONWebService?u=o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ&apiKey=tV1gwVjXJkx4mfNyyXHlwA%3D%3D&servicekey=zbMGm2LerdEvF8kg2MzJIg%3D%3D&OverdueDays=1');
-    
-            if ($response->successful()) {
-                $data = $response->json();
-    
-                foreach ($data as $entry) {
-                    \Log::info('Fetched entry:', $entry);
-                    $this->sendTemplateMessage($entry, $campaigns__id); // Pass campaigns__id here
-                }
-    
-                return response()->json(['message' => 'Data processed successfully']);
-            } else {
-                \Log::error('Failed to fetch data', ['details' => $response->body()]);
-                // Optionally, you might want to try and parse the HTML error page
-                // e.g., extracting the error message from the HTML
-                $html = $response->body();
-                $errorMessage = $this->extractErrorMessageFromHtml($html);
-                return response()->json(['error' => 'Failed to fetch data', 'details' => $errorMessage], $response->status());
-            }
-        } catch (\Exception $e) {
-            \Log::error('Exception occurred while fetching data', ['error' => $e->getMessage()]);
-            return response()->json(['error' => 'Failed to fetch and send data', 'details' => $e->getMessage()], 500);
-        }
-    }
-    
-    private function extractErrorMessageFromHtml($html)
-    {
-        // Basic extraction logic, can be refined based on the HTML structure
-        $dom = new \DOMDocument();
-        @$dom->loadHTML($html);
-        $xpath = new \DOMXPath($dom);
-        $messageNodes = $xpath->query('//p');
-        $messages = [];
-        foreach ($messageNodes as $node) {
-            $messages[] = $node->textContent;
-        }
-        return implode(' ', $messages);
-    }
-    public function processData($jsonData)
-{
-    $data = json_decode($jsonData, true);
 
-    if (json_last_error() === JSON_ERROR_NONE) {
-        foreach ($data as $entry) {
-            // Process each entry
-            \Log::info('Processing entry:', $entry);
-            // Example processing
-            $this->sendTemplateMessage($entry, $campaigns__id); // Ensure $campaigns__id is defined or passed appropriately
+
+    public function fetchAndSend(Request $request)
+{
+    try {
+        $campaigns__id = $request->query('campaigns__id', 1); // Default to 1 if not provided
+
+        if (!$this->campaignExists($campaigns__id)) {
+            \Log::error('Campaign not found', ['campaigns__id' => $campaigns__id]);
+            return response()->json(['error' => 'Campaign not found'], 404);
         }
-    } else {
-        \Log::error('Invalid JSON data', ['json_error' => json_last_error_msg()]);
+
+        $url = 'https://www.tcsion.com/iONBizServices/iONWebService?u=o3p%2FoROBrcGCHbD9jePhCRVXbGP7C13mQfdEjeiA7iJzhP0UqDRTdNazobyhKGIZ&apiKey=tV1gwVjXJkx4mfNyyXHlwA%3D%3D&servicekey=zbMGm2LerdEvF8kg2MzJIg%3D%3D&OverdueDays=1';
+        \Log::info('Fetching data from API', ['url' => $url]);
+
+        $response = Http::get($url);
+        
+        \Log::info('API response status', ['status' => $response->status()]);
+        \Log::info('API response body', ['body' => $response->body()]);
+
+        if ($response->successful()) {
+            $data = $response->json();
+
+            foreach ($data as $entry) {
+                \Log::info('Fetched entry:', $entry);
+                $this->sendTemplateMessage($entry, $campaigns__id); // Pass campaigns__id here
+            }
+
+            return response()->json(['message' => 'Data processed successfully']);
+        } else {
+            \Log::error('Failed to fetch data', ['details' => $response->body()]);
+            return response()->json(['error' => 'Failed to fetch data', 'details' => $response->body()], $response->status());
+        }
+    } catch (\Exception $e) {
+        \Log::error('Exception occurred while fetching data', ['error' => $e->getMessage()]);
+        return response()->json(['error' => 'Failed to fetch and send data', 'details' => $e->getMessage()], 500);
     }
 }
 
-
+    
    
     // public function fetchAndSend(Request $request)
     // {

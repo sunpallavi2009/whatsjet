@@ -92,6 +92,7 @@ class AutoCampaignController extends BaseController
             $response = Http::get($url);
     
             \Log::info('API response status', ['status' => $response->status()]);
+            \Log::info('API response headers', ['headers' => $response->headers()]);
             \Log::info('API response body', ['body' => $response->body()]);
     
             if ($response->successful()) {
@@ -116,6 +117,7 @@ class AutoCampaignController extends BaseController
             return response()->json(['error' => 'Failed to fetch and send data', 'details' => $e->getMessage()], 500);
         }
     }
+    
     
 
     
